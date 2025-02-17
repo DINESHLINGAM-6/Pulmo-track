@@ -1,41 +1,42 @@
-Frontend Plan 🖥️
+Frontend Plan 🖥️ (Next.js)
 Overview 🌐
-The frontend of Pulmo-Track will serve as the interface for users to upload reports, track progress, view results, and interact with AI for queries. It will be built with React.js and Material-UI for a responsive and modern user experience.
+The frontend of Pulmo-Track will serve as the interface for users to upload reports, track progress, view results, and interact with AI for queries. It will be built with Next.js for server-side rendering (SSR) and a modern user experience.
 
 Tech Stack 🛠️
-Framework: React.js ⚛️
+Framework: Next.js ⚛️
 
-UI Library: Material-UI 🎨
+UI Library: Material-UI 🎨 (or Tailwind CSS for styling)
 
 State Management: Context API 🔄
 
-Routing: React Router 🗺️
+Routing: Next.js File-based Routing 🗺️
 
 Charting Library: Chart.js 📊 (for progress tracking)
 
 CSS: Global styling through global.css 🎀
 
-Structure 📂
+Folder Breakdown 📂
 
 frontend/
-├── public/
+├── public/                        # Static assets like images, fonts, etc.
 │   └── index.html
 ├── src/
-│   ├── components/
-│   │   ├── Header.jsx          # 🗂️ Contains the site header and navigation links.
-│   │   ├── ProgressCharts.jsx  # 📈 Displays cancer progression data as charts.
-│   │   ├── ReportUpload.jsx    # 📤 Handles the report upload form and file input.
-│   │   └── QueryChat.jsx       # 🤖 Interface for AI-powered query handling (chatbot).
-│   ├── context/
-│   │   └── AppContext.js       # 🌍 Manages global state such as authentication.
-│   ├── pages/
-│   │   ├── Home.jsx            # 🏠 Welcome page with basic information.
-│   │   ├── Dashboard.jsx       # 📊 User dashboard to see reports and progress.
-│   │   └── Reports.jsx         # 📄 Displays a list of uploaded reports with progress data.
-│   ├── App.js                  # 🚀 Main component that defines routes and context.
-│   ├── index.js                # 📥 Entry point for React app.
-│   └── styles/
-│       └── global.css          # 🎨 Global styles for the app.
+│   ├── components/                # Reusable UI components
+│   │   ├── Header.jsx             # 🗂️ Contains the site header and navigation links.
+│   │   ├── ProgressCharts.jsx     # 📈 Displays cancer progression data as charts.
+│   │   ├── ReportUpload.jsx       # 📤 Handles the report upload form and file input.
+│   │   └── QueryChat.jsx          # 🤖 Interface for AI-powered query handling (chatbot).
+│   ├── context/                   # Global state management
+│   │   └── AppContext.js          # 🌍 Manages global state such as authentication.
+│   ├── pages/                     # Next.js file-based routing
+│   │   ├── index.js               # 🏠 Home Page (landing page with basic info).
+│   │   ├── dashboard.js           # 📊 User dashboard to see reports and progress.
+│   │   └── reports.js             # 📄 Displays a list of uploaded reports with progress data.
+│   ├── styles/                    # Global styles
+│   │   └── global.css             # 🎀 Global styles for the app.
+│   ├── public/                    # Static assets (images, fonts, etc.)
+│   └── next.config.js             # ⚙️ Configuration for Next.js (e.g., API proxy, env vars).
+└── package.json                   # 📦 Manages dependencies and scripts for the frontend.
 Components 🧩
 Header.jsx: Displays navigation links (Dashboard, Reports, Home, etc.) and authentication info (Login/Logout). 🔗
 
@@ -46,11 +47,11 @@ ReportUpload.jsx: A form for users to upload medical reports (images and text), 
 QueryChat.jsx: A conversational interface that allows users to interact with the AI for queries related to their reports. 🤖
 
 Pages 📄
-Home.jsx: The landing page of the app, providing basic information about the app's features and functionalities. 🏠
+index.js: The landing page of the app, providing basic information about the app's features and functionalities. 🏠
 
-Dashboard.jsx: After login, users land on their dashboard, where they can see their uploaded reports, track progress, and upload new ones. 📊
+dashboard.js: After login, users land on their dashboard, where they can see their uploaded reports, track progress, and upload new ones. 📊
 
-Reports.jsx: A page where users can view their uploaded reports, progress data, and detailed analysis over time. 📄
+reports.js: A page where users can view their uploaded reports, progress data, and detailed analysis over time. 📄
 
 Workflow 🔄
 Authentication: The app will check for valid Firebase authentication tokens on load. 🔐
