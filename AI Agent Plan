@@ -1,0 +1,37 @@
+AI Agent Plan 🤖
+Overview 🌐
+The AI agents will analyze medical reports, track cancer progression over time, and assist users with queries related to their health. The agents will operate as separate microservices, each responsible for a specific task (e.g., text analysis, image analysis, etc.).
+
+Tech Stack 🛠️
+Text Analysis: Hugging Face Transformers (for NLP tasks such as extracting insights from medical text reports) 📄
+
+Image Analysis: Google Cloud Vision API or AWS Rekognition (for image analysis tasks like detecting lung cancer progression in CT scans or X-rays) 🖼️
+
+Report Comparison: Python with Scikit-learn (for comparing historical reports and calculating cancer progression) 📊
+
+Conversational AI: OpenAI GPT-4 API (for interacting with users through a query system) 💬
+
+Folder Breakdown 📂
+
+ai-agents/
+├── text-analysis/
+│   ├── textProcessor.py        # 📄 Script for processing and extracting information from text-based reports.
+│   └── requirements.txt        # 📦 Dependencies for text processing.
+├── image-analysis/
+│   ├── imageProcessor.py       # 🖼️ Script for processing medical images (e.g., CT scans, X-rays).
+│   └── requirements.txt        # 📦 Dependencies for image processing.
+├── report-comparison/
+│   ├── comparisonEngine.py     # 📊 Script for comparing historical and new reports to track progression.
+│   └── requirements.txt        # 📦 Dependencies for report comparison.
+├── query-handler/
+│   ├── queryProcessor.py       # 💬 Script for handling user queries and interacting with GPT-4.
+│   └── requirements.txt        # 📦 Dependencies for query processing.
+└── README.md                   # 📖 Documentation for the AI agents and their functionality.
+Agent Workflow 🔄
+Text Analysis: When a text report (e.g., doctor's notes, blood test results) is uploaded, textProcessor.py uses Hugging Face Transformers to extract structured data (e.g., tumor size, blood counts). 📄
+
+Image Analysis: When medical images (e.g., X-rays, CT scans) are uploaded, imageProcessor.py uses the Google Cloud Vision API or AWS Rekognition to identify cancerous features and output a progression score. 🖼️
+
+Report Comparison: comparisonEngine.py compares the latest report with previous ones to calculate a progression score (0-100) that indicates how the cancer is progressing. 📊
+
+Query Handling: queryProcessor.py interacts with OpenAI’s GPT-4 model to provide users with answers to their questions, such as understanding their report or treatment options. 💬
