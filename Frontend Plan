@@ -16,7 +16,7 @@ Charting Library: Chart.js 📊 (for progress tracking)
 CSS: Global styling through global.css 🎀
 
 Folder Breakdown 📂
-Copy
+
 frontend/
 ├── public/                        # Static assets like images, fonts, etc.
 │   └── index.html
