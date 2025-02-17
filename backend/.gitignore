@@ -1,0 +1,42 @@
+# Ignore Python bytecode files
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.db
+
+# Ignore virtual environment directories
+venv/
+*.env
+
+# Ignore .vscode and other IDE-related files
+.vscode/
+
+# Ignore log files
+*.log
+
+# Ignore database files (if you use SQLite or other local DB)
+*.sqlite3
+
+# Ignore environment variables
+.env
+
+# Ignore PyCharm files
+.idea/
+
+# Ignore other Python IDE files
+*.swp
+
+# Ignore Docker files (if applicable)
+Dockerfile
+docker-compose.yml
+
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Ignore dependencies file (if you are using poetry or pipenv)
+*.lock
+
+# Ignore system files
+.DS_Store
+Thumbs.db
