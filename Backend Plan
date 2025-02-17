@@ -1,0 +1,55 @@
+Overview 🌐
+The backend will handle user authentication, report storage, AI agent integrations, and provide RESTful APIs to the frontend. It will use Node.js with Express for creating the server and MongoDB for storing user and report data.
+
+Tech Stack 🛠️
+Backend Framework: Node.js with Express.js 🚀
+
+Database: MongoDB 🗄️
+
+Cloud Storage: Firebase Storage (for storing reports and images) ☁️
+
+Authentication: Firebase Authentication 🔐
+
+API Communication: RESTful API 🌐
+
+Middleware: Custom error handling and authentication middleware ⚙️
+
+Folder Breakdown 📂
+
+backend/
+├── controllers/
+│   ├── authController.js        # 🔐 Handles user authentication (login, register).
+│   ├── reportController.js      # 📄 Manages report uploads, storage, and metadata.
+│   └── userController.js        # 👤 Handles user profile and data management.
+├── models/
+│   ├── User.js                  # 👤 MongoDB model for user data.
+│   ├── Report.js                # 📄 MongoDB model for report metadata (name, type, date).
+│   └── ProgressData.js          # 📊 MongoDB model for storing cancer progression data (scores, metrics).
+├── routes/
+│   ├── authRoutes.js            # 🔐 API routes for authentication-related tasks.
+│   ├── reportRoutes.js          # 📄 API routes for handling report uploads, analysis, and retrieval.
+│   └── userRoutes.js            # 👤 API routes for user data.
+├── services/
+│   ├── mongoService.js          # 🗄️ Service for handling MongoDB operations.
+│   └── aiService.js             # 🤖 Service for handling communication with AI agents.
+├── utils/
+│   ├── authMiddleware.js        # 🔐 Middleware to verify authentication tokens.
+│   └── errorHandler.js          # ❌ Global error handler.
+├── app.js                       # ⚙️ Main app configuration.
+├── server.js                    # 🚀 Server initialization and startup.
+└── package.json
+API Endpoints 🌐
+POST /login: Authenticate users and provide tokens. 🔐
+
+POST /uploadReport: Handle the upload of medical reports and store them in Firebase Storage. Metadata is saved in MongoDB. 📤
+
+GET /reports/{userId}: Retrieve a list of reports for a user, along with their metadata and analysis. 📄
+
+POST /query: Handle user queries, passing them to the AI backend and returning responses. 🤖
+
+GET /progress/{userId}: Fetch the user’s progress data based on historical reports and cancer progression metrics. 📊
+
+Services ⚙️
+mongoService.js: Contains utility functions to interact with MongoDB for storing and retrieving user data, reports, and progress. 🗄️
+
+aiService.js: Integrates with the AI agents (for text analysis, image processing, etc.). This service calls the AI microservices hosted in the ai-agents folder. 🤖
