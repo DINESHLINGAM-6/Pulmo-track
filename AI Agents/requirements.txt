@@ -1,0 +1,8 @@
+agno
+exa
+qdrant-client
+langchain-qdrant
+langchain-community
+streamlit
+exa_py
+
