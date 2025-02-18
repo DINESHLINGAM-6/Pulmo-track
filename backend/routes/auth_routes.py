@@ -7,7 +7,7 @@ import datetime
 
 router = APIRouter()
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-SECRET_KEY = "your_secret_key"
+SECRET_KEY = "your_clerk_secret_key"
 ALGORITHM = "HS256"
 
 @router.post("/register")
@@ -19,13 +19,14 @@ async def register(user: User):
     hashed_password = pwd_context.hash(user.password)
     user_dict = user.dict()
     user_dict["password"] = hashed_password
+    user_dict["registration_date"] = datetime.datetime.utcnow()  # Ensure it's a datetime object
 
     await db.users.insert_one(user_dict)
     return {"message": "User registered successfully"}
 
 @router.post("/login")
 async def login(user: User):
-    db_user = await db.users.find_one({"email": user.email})
+    db_user = await db.users.find_one({"username": user.username})
     if not db_user or not pwd_context.verify(user.password, db_user["password"]):
         raise HTTPException(status_code=400, detail="Invalid credentials")
 
