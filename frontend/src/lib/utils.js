@@ -1,6 +1,15 @@
-import { clsx } from "clsx";
-import { twMerge } from "tailwind-merge"
+// utils.js
 
-export function cn(...inputs) {
-  return twMerge(clsx(inputs));
+export const formatDate = (date) => {
+
+  return new Date(date).toLocaleDateString();
+
+};
+
+// Add the cn function
+
+export function cn(...classes) {
+
+  return classes.filter(Boolean).join(' ');
+
 }
