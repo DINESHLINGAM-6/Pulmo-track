@@ -1,25 +1,17 @@
 import React from "react";
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import { Card, CardHeader, CardContent } from "../components/ui/card";
 import { Circle } from "lucide-react";
 import { format } from "date-fns";
+import { useQuery } from '@tanstack/react-query';
+import { api } from '../services/api';
 
 const Timeline = () => {
-  const events = [
-    {
-      id: 1,
-      date: new Date(),
-      title: "Doctor Visit",
-      description: "Regular checkup with Dr. Smith",
-      type: "visit",
-    },
-    {
-      id: 2,
-      date: new Date(Date.now() - 86400000),
-      title: "Lung Function Test",
-      description: "SpO2 levels normal",
-      type: "test",
-    },
-  ];
+  const { data: events, isLoading } = useQuery({
+    queryKey: ['timeline'],
+    queryFn: () => api.get('/timeline/events').then(res => res.data)
+  });
+
+  if (isLoading) return <div>Loading...</div>;
 
   return (
     <div className="space-y-6">
@@ -31,7 +23,7 @@ const Timeline = () => {
       <div className="relative">
         <div className="absolute left-4 top-0 h-full w-0.5 bg-gray-200" />
         <div className="space-y-6">
-          {events.map((event) => (
+          {events?.map((event) => (
             <div key={event.id} className="relative pl-10">
               <Circle className="absolute left-2 -translate-x-1/2 w-5 h-5 text-primary fill-white" />
               <Card>

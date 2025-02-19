@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "../../components/ui/card";
 import { Heart, Activity, Moon } from "lucide-react";
-import type { HealthMetrics as HealthData } from "@/services/health/health-type";
+import type { HealthMetrics as HealthData } from "../../../services/health/health-type";
 
 export function HealthMetrics() {
   const [metrics, setMetrics] = useState<HealthData | null>(null);

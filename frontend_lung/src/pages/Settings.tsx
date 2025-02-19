@@ -1,8 +1,21 @@
 import React from "react";
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import { Card, CardHeader, CardContent } from "../components/ui/card";
 import { User, Bell, Shield, Smartphone } from "lucide-react";
+import { useQuery, useMutation } from '@tanstack/react-query';
+import { api } from '../services/api';
 
 const Settings = () => {
+  const { data, isLoading } = useQuery({
+    queryKey: ['settings'],
+    queryFn: () => api.get('/settings').then(res => res.data)
+  });
+
+  const updateSettings = useMutation({
+    mutationFn: (newSettings) => api.put('/settings', newSettings)
+  });
+
+  if (isLoading) return <div>Loading...</div>;
+
   const sections = [
     {
       icon: User,
