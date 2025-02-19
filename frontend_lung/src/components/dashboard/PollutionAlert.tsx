@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Card, CardContent } from "../ui/card";
+import { Alert, AlertDescription } from "../ui/alert";
 import { Wind, AlertTriangle } from "lucide-react";
 import { getPollutionData } from "../../../services/pollution/pollution-api";
 import type { PollutionData } from "../../../services/pollution/pollution-type";
