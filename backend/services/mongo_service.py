@@ -1,10 +1,18 @@
-from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo import MongoClient
+from app.utils.config import MONGO_URI, DB_NAME
 
-MONGO_URI = "mongodb://localhost:27017"
-DB_NAME = "pulmo_track"
-
-client = AsyncIOMotorClient(MONGO_URI)
+client = MongoClient(MONGO_URI)
 db = client[DB_NAME]
 
-async def get_db():
-    return db
+def save_file(file_id: str, filename: str, contents: bytes) -> bool:
+    try:
+        db.files.insert_one({
+            "file_id": file_id,
+            "filename": filename,
+            "content": contents,
+        })
+        return True
+    except Exception as e:
+        print("Error saving file:", e)
+        return False
+

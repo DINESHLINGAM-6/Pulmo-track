@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom font definitions (if using Google Fonts via CSS custom properties) */
+:root {
+  --font-geist-sans: "Inter", sans-serif; /* Replace 'Inter' with your chosen sans-serif font */
+  --font-geist-mono: "Fira Code", monospace; /* Replace with your chosen monospace font */
+}
+
+/* Example: Override shadcn-inspired component styles */
+.btn-primary {
+  @apply bg-primary text-white hover:bg-primary-dark;
+}
+
+.input {
+  @apply border border-gray-300 rounded-md p-2;
+}
+
+/* Global background color */
+body {
+  background-color: var(--tw-bg-background, #f8fafc);
+}

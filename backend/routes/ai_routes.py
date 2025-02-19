@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from utils.auth_middleware import verify_token
-from services.ai_service import analyze_report
+from backend.services.gemini import analyze_report
 
 router = APIRouter()
 
