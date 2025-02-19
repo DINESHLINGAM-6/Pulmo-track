@@ -1,11 +1,17 @@
-
 import { Activity, Heart, Droplets, Wind, CheckCircle2 } from "lucide-react";
+import { PollutionAlert } from "@/components/dashboard/PollutionAlert";
+import { HealthMetrics } from "@/components/dashboard/HealthMetrics";
 
 const Index = () => {
   const healthMetrics = [
     { name: "Heart Rate", value: "72 bpm", icon: Heart, color: "text-red-500" },
     { name: "SpO2", value: "98%", icon: Activity, color: "text-blue-500" },
-    { name: "Blood Pressure", value: "120/80", icon: Droplets, color: "text-purple-500" },
+    {
+      name: "Blood Pressure",
+      value: "120/80",
+      icon: Droplets,
+      color: "text-purple-500",
+    },
     { name: "Air Quality", value: "Good", icon: Wind, color: "text-green-500" },
   ];
 
@@ -18,9 +24,21 @@ const Index = () => {
   return (
     <div className="space-y-8 animate-fade-up">
       <header className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Welcome back, Sarah</h1>
+        <h1 className="text-3xl font-bold text-gray-900">
+          Welcome back, Sarah
+        </h1>
         <p className="text-gray-600">Here's your health overview for today</p>
       </header>
+      {/* Pollution Alert Section */}
+      <div className="mb-6">
+        <PollutionAlert />
+      </div>
+
+      {/* Health Metrics Section */}
+      <div className="mb-6">
+        <h2 className="text-xl font-semibold mb-4">Health Metrics</h2>
+        <HealthMetrics />
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {healthMetrics.map((metric) => (
@@ -33,7 +51,9 @@ const Index = () => {
                 <p className="text-sm text-gray-600">{metric.name}</p>
                 <p className="text-2xl font-bold mt-1">{metric.value}</p>
               </div>
-              <metric.icon className={`w-6 h-6 ${metric.color} group-hover:scale-110 transition-transform`} />
+              <metric.icon
+                className={`w-6 h-6 ${metric.color} group-hover:scale-110 transition-transform`}
+              />
             </div>
           </div>
         ))}
@@ -48,7 +68,9 @@ const Index = () => {
         </div>
 
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-          <h2 className="text-xl font-semibold mb-4">Today's Health Missions</h2>
+          <h2 className="text-xl font-semibold mb-4">
+            Today's Health Missions
+          </h2>
           <div className="space-y-4">
             {dailyMissions.map((mission, index) => (
               <div
@@ -62,7 +84,9 @@ const Index = () => {
                 />
                 <span
                   className={`${
-                    mission.completed ? "text-gray-400 line-through" : "text-gray-700"
+                    mission.completed
+                      ? "text-gray-400 line-through"
+                      : "text-gray-700"
                   }`}
                 >
                   {mission.title}
