@@ -5,7 +5,7 @@ from routes.user_routes import router as user_router
 from routes.report_routes import router as report_router
 from routes.ai_routes import router as ai_router
 from routes import files, iot, chatbot
-from .routes import dashboard, visits, reports, timeline, settings
+from routes import dashboard, visits, reports, timeline, settings
 
 
 app = FastAPI(title="Pulmo-Track API", version="1.0")

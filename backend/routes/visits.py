@@ -1,4 +1,5 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from utils.auth_middleware import get_current_user
 from pydantic import BaseModel
 from datetime import datetime
 from typing import List
@@ -14,16 +15,15 @@ class Visit(BaseModel):
     status: str
 
 @router.get("/")
-async def get_visits():
+async def get_visits(current_user: str = Depends(get_current_user)):
     return [{
         "id": 1,
-        "doctor": "Dr. Sarah Smith",
-        "hospital": "City General Hospital",
+        "doctor": "Dr. Smith",
         "date": datetime.now(),
-        "summary": "Regular checkup and lung function test",
+        "summary": "Regular checkup",
         "status": "completed"
     }]
 
 @router.post("/schedule")
-async def schedule_visit(visit: Visit):
+async def schedule_visit(visit: dict, current_user: str = Depends(get_current_user)):
     return {"status": "success", "data": visit} 

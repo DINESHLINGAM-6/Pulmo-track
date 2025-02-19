@@ -1,7 +1,8 @@
-from pydantic import BaseModel, EmailStr, constr
+from pydantic import BaseModel, EmailStr, constr, Field
 from datetime import datetime
 from typing import Optional
 from enum import Enum
+import re
 
 class Sex(str, Enum):
     MALE = "male"
@@ -35,7 +36,10 @@ class User(BaseModel):
     
     # Personal Information
     name: Optional[str] = None
-    phone_number: Optional[constr(regex=r'^\+?[1-9]\d{8,14}$')] = None
+    phone_number: Optional[str] = Field(
+        None, 
+        pattern=r'^\+?[1-9]\d{8,14}$'
+    )
     dob: Optional[datetime] = None
     sex: Optional[Sex] = None
     blood_type: Optional[BloodType] = None

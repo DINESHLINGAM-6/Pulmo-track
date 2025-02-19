@@ -1,10 +1,10 @@
-from fastapi import APIRouter
-from datetime import datetime
+from fastapi import APIRouter, Depends
+from utils.auth_middleware import get_current_user
 
 router = APIRouter()
 
 @router.get("/metrics")
-async def get_dashboard_metrics():
+async def get_dashboard_metrics(current_user: str = Depends(get_current_user)):
     return {
         "healthMetrics": [
             {"name": "Heart Rate", "value": "72 bpm", "color": "text-red-500"},

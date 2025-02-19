@@ -1,15 +1,15 @@
-from pydantic import BaseModel, constr
+from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 from typing import Optional, List, Dict
 from enum import Enum
 
 class ReportType(str, Enum):
+    SPIROMETRY = "spirometry"
     XRAY = "xray"
     CT_SCAN = "ct_scan"
     MRI = "mri"
     BLOOD_TEST = "blood_test"
     BIOPSY = "biopsy"
-    SPIROMETRY = "spirometry"
     OTHER = "other"
 
 class ReportStatus(str, Enum):
@@ -19,12 +19,14 @@ class ReportStatus(str, Enum):
     ARCHIVED = "archived"
 
 class AIAnalysisResult(BaseModel):
-    confidence_score: float
-    findings: List[str]
-    recommendations: List[str]
-    risk_level: str
-    detected_anomalies: Optional[List[Dict[str, any]]] = None
+    model_config = ConfigDict(arbitrary_types_allowed=True)
     
+    findings: List[str]
+    severity: str
+    recommendations: List[str]
+    confidence_score: float
+    metadata: Dict[str, str]
+
 class VitalSigns(BaseModel):
     spo2_level: Optional[float] = None
     heart_rate: Optional[int] = None
@@ -33,18 +35,19 @@ class VitalSigns(BaseModel):
     temperature: Optional[float] = None
 
 class Report(BaseModel):
-    # Identification
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+    
     id: Optional[str] = None
     patient_id: str
     doctor_id: Optional[str] = None
     
     # Basic Information
-    report_type: ReportType
+    type: ReportType
     title: str
     description: Optional[str] = None
     
     # File Information
-    file_url: str
+    file_path: str
     file_type: str  # e.g., "pdf", "jpg", "dicom"
     file_size: Optional[int] = None
     
@@ -56,7 +59,7 @@ class Report(BaseModel):
     # Status and Results
     status: ReportStatus = ReportStatus.PENDING
     vital_signs: Optional[VitalSigns] = None
-    ai_analysis: Optional[AIAnalysisResult] = None
+    analysis_result: Optional[AIAnalysisResult] = None
     
     # Doctor's Input
     doctor_notes: Optional[str] = None
@@ -72,20 +75,16 @@ class Report(BaseModel):
     is_critical: bool = False
     visibility: str = "private"  # private, shared, public
     
-    class Config:
-        use_enum_values = True
-        json_encoders = {
-            datetime: lambda v: v.isoformat()
-        }
-        
+    created_at: Optional[str] = None
+    
     def get_summary(self) -> Dict[str, any]:
         """Returns a summary of the report for dashboard display"""
         return {
             "title": self.title,
-            "type": self.report_type,
+            "type": self.type,
             "date": self.uploaded_at,
             "status": self.status,
             "is_critical": self.is_critical,
-            "key_findings": self.ai_analysis.findings if self.ai_analysis else None,
+            "key_findings": self.analysis_result.findings if self.analysis_result else None,
             "next_appointment": self.next_appointment
         }

@@ -1,4 +1,5 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from utils.auth_middleware import get_current_user
 from pydantic import BaseModel
 
 router = APIRouter()
@@ -10,7 +11,7 @@ class UserSettings(BaseModel):
     profile: dict
 
 @router.get("/")
-async def get_settings():
+async def get_settings(current_user: str = Depends(get_current_user)):
     return {
         "sections": [
             {
@@ -33,5 +34,8 @@ async def get_settings():
     }
 
 @router.put("/")
-async def update_settings(settings: UserSettings):
+async def update_settings(
+    settings: dict,
+    current_user: str = Depends(get_current_user)
+):
     return {"status": "success", "data": settings} 
