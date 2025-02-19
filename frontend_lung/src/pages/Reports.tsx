@@ -2,24 +2,18 @@ import React, { useState } from "react";
 import { Card, CardHeader, CardContent } from "../components/ui/card";
 import { FileText, Download, Calendar } from "lucide-react";
 import { format } from "date-fns";
-import { useQuery, useMutation } from '@tanstack/react-query';
-import { api } from '../services/api';
 
 const Reports = () => {
-  const { data: reports, isLoading } = useQuery({
-    queryKey: ['reports'],
-    queryFn: () => api.get('/reports').then(res => res.data)
-  });
-
-  const uploadMutation = useMutation({
-    mutationFn: (file: File) => {
-      const formData = new FormData();
-      formData.append('file', file);
-      return api.post('/reports/upload', formData);
-    }
-  });
-
-  if (isLoading) return <div>Loading...</div>;
+  const [reports, setReports] = useState([
+    {
+      id: 1,
+      title: "Pulmonary Function Test",
+      date: new Date(),
+      doctor: "Dr. Sarah Smith",
+      type: "Test Results",
+      fileSize: "2.4 MB",
+    },
+  ]);
 
   return (
     <div className="space-y-6">
@@ -36,7 +30,7 @@ const Reports = () => {
       </header>
 
       <div className="grid gap-6">
-        {reports?.map((report) => (
+        {reports.map((report) => (
           <Card key={report.id} className="hover:shadow-md transition-shadow">
             <CardContent className="p-6">
               <div className="flex justify-between items-start">

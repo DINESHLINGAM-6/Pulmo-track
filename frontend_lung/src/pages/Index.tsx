@@ -1,21 +1,25 @@
 import { Activity, Heart, Droplets, Wind, CheckCircle2 } from "lucide-react";
 import { PollutionAlert } from "../components/dashboard/PollutionAlert";
 import { HealthMetrics } from "../components/dashboard/HealthMetrics";
-import { useQuery } from '@tanstack/react-query';
-import { api } from '../services/api';
 
 const Index = () => {
-  const { data, isLoading } = useQuery({
-    queryKey: ['dashboard'],
-    queryFn: () => api.get('/dashboard/metrics').then(res => res.data)
-  });
+  const healthMetrics = [
+    { name: "Heart Rate", value: "72 bpm", icon: Heart, color: "text-red-500" },
+    { name: "SpO2", value: "98%", icon: Activity, color: "text-blue-500" },
+    {
+      name: "Blood Pressure",
+      value: "120/80",
+      icon: Droplets,
+      color: "text-purple-500",
+    },
+    { name: "Air Quality", value: "Good", icon: Wind, color: "text-green-500" },
+  ];
 
-  if (isLoading) return <div>Loading...</div>;
-
-  const { healthMetrics, dailyMissions } = data || {
-    healthMetrics: [],
-    dailyMissions: []
-  };
+  const dailyMissions = [
+    { title: "Take morning medication", completed: true },
+    { title: "10 minute breathing exercise", completed: false },
+    { title: "Record peak flow reading", completed: false },
+  ];
 
   return (
     <div className="space-y-8 animate-fade-up">

@@ -49,6 +49,11 @@ class AuthMiddleware:
         credentials: HTTPAuthorizationCredentials = Security(security)
     ) -> Dict:
         """Verify the JWT token and return the payload"""
+        if not credentials:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Not authenticated"
+            )
         try:
             token = credentials.credentials
             payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[JWT_ALGORITHM])
@@ -139,6 +144,17 @@ class AuthMiddleware:
             return await self.get_current_user(credentials)
         except HTTPException:
             return None
+
+    async def __call__(self, credentials: HTTPAuthorizationCredentials = Depends(security)):
+        if not credentials:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid authentication credentials"
+            )
+        
+        # Verify token logic here
+        token = credentials.credentials
+        # ... rest of your token verification logic ...
 
 # Create singleton instance
 auth_handler = AuthMiddleware()

@@ -2,25 +2,18 @@ import React, { useState } from "react";
 import { Card, CardHeader, CardContent } from "../components/ui/card";
 import { Calendar, Clock, Hospital } from "lucide-react";
 import { format } from "date-fns";
-import { useQuery, useMutation } from '@tanstack/react-query';
-import { api } from '../services/api';
-import { queryClient } from '../lib/react-query';
 
 const DoctorVisits = () => {
-  const { data: visits, isLoading } = useQuery({
-    queryKey: ['visits'],
-    queryFn: () => api.get('/visits').then(res => res.data)
-  });
-
-  const scheduleMutation = useMutation({
-    mutationFn: (visitData) => api.post('/visits/schedule', visitData),
-    onSuccess: () => {
-      // Refresh visits data
-      queryClient.invalidateQueries({ queryKey: ['visits'] });
-    }
-  });
-
-  if (isLoading) return <div>Loading...</div>;
+  const [visits, setVisits] = useState([
+    {
+      id: 1,
+      doctor: "Dr. Sarah Smith",
+      hospital: "City General Hospital",
+      date: new Date(),
+      summary: "Regular checkup and lung function test",
+      status: "completed",
+    },
+  ]);
 
   return (
     <div className="space-y-6">
@@ -37,7 +30,7 @@ const DoctorVisits = () => {
       </header>
 
       <div className="grid gap-6">
-        {visits?.map((visit) => (
+        {visits.map((visit) => (
           <Card key={visit.id} className="hover:shadow-md transition-shadow">
             <CardContent className="p-6">
               <div className="flex justify-between items-start">
