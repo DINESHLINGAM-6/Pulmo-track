@@ -1,25 +1,27 @@
-import { UserButton, SignedIn, SignedOut } from '@clerk/nextjs';
-import { Button } from '@/components/ui/button'; // Shadcn button UI component
-import Link from 'next/link';
+import Link from "next/link";
 
-const Header = () => {
+export default function Header() {
   return (
-    <header className="flex justify-between items-center p-4 bg-blue-500 text-white">
-      <div>
-        <Link href="/" className="text-xl font-bold">Pulmo-Track</Link>
-      </div>
-      <div className="flex gap-4">
-        <SignedOut>
-          <Button variant="outline">
-            <Link href="/signin">Sign In</Link>
-          </Button>
-        </SignedOut>
-        <SignedIn>
-          <UserButton />
-        </SignedIn>
+    <header className="bg-white shadow">
+      <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+        <Link href="/" className="text-2xl font-bold text-blue-600">
+          Pulmo-Track
+        </Link>
+        <nav className="flex items-center space-x-4">
+          <Link href="/dashboard" className="text-gray-600 hover:text-blue-600">
+            Dashboard
+          </Link>
+          <Link href="/visits" className="text-gray-600 hover:text-blue-600">
+            Doctor Visits
+          </Link>
+          <Link href="/reports" className="text-gray-600 hover:text-blue-600">
+            Reports
+          </Link>
+          <Link href="/settings" className="text-gray-600 hover:text-blue-600">
+            Settings
+          </Link>
+        </nav>
       </div>
     </header>
   );
-};
-
-export default Header;
+}

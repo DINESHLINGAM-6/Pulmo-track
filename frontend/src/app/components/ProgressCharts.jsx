@@ -1,19 +1,16 @@
-import { Card } from "@/components/ui/card"; // Shadcn card UI component
-import { Progress } from "@/components/ui/progress"; // Shadcn progress UI component
+import PropTypes from 'prop-types';
 
-const ProgressCharts = () => {
+export default function DashboardCard({ title, value }) {
   return (
-    <div className="grid grid-cols-2 gap-4">
-      <Card>
-        <h2 className="text-lg font-semibold">Lung Health Progress</h2>
-        <Progress value={70} />
-      </Card>
-      <Card>
-        <h2 className="text-lg font-semibold">Rehabilitation Status</h2>
-        <Progress value={50} />
-      </Card>
+    <div className="bg-white p-6 rounded-lg shadow-md">
+      <h2 className="text-xl font-semibold text-gray-800 mb-2">{title}</h2>
+      <p className="text-3xl font-bold text-blue-600">{value}</p>
     </div>
-  );
+  )
+}
+
+DashboardCard.propTypes = {
+  title: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired
 };
 
-export default ProgressCharts;
