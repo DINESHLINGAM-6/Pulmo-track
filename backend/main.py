@@ -6,10 +6,11 @@ from routes.report_routes import router as report_router
 from routes.ai_routes import router as ai_router
 from routes import files, iot, chatbot
 from routes import dashboard, visits, reports, timeline, settings
-
+from services.mongo_service import mongodb
 
 app = FastAPI(title="Pulmo-Track API", version="1.0")
 
+# CORS configuration
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173"],
@@ -17,6 +18,15 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"]
 )
+
+# Startup and shutdown events
+@app.on_event("startup")
+async def startup():
+    await mongodb.connect()
+
+@app.on_event("shutdown")
+async def shutdown():
+    await mongodb.close()
 
 # Include API routes
 app.include_router(auth_router, prefix="/auth", tags=["Auth"])

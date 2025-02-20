@@ -8,16 +8,22 @@ from services.mongo_service import db
 import os
 import logging
 from bson import ObjectId
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Configuration from environment variables
-JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "your-secret-key-here")
-CLERK_SECRET_KEY = os.getenv("CLERK_SECRET_KEY", "your-clerk-secret-here")
-JWT_ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "1440"))  # 24 hours
+# Configuration
+JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
+JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "1440"))
+
+if not JWT_SECRET_KEY:
+    raise ValueError("JWT_SECRET_KEY must be set in environment variables")
 
 # Security schemes
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
@@ -44,77 +50,36 @@ class AuthMiddleware:
                 detail="Could not create access token"
             )
 
-    async def verify_token(
-        self,
-        credentials: HTTPAuthorizationCredentials = Security(security)
-    ) -> Dict:
-        """Verify the JWT token and return the payload"""
-        if not credentials:
+    async def verify_token(self, token: str) -> Dict:
+        try:
+            payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[JWT_ALGORITHM])
+            return payload
+        except JWTError as e:
+            logger.error(f"JWT verification failed: {str(e)}")
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Not authenticated"
+                detail="Invalid authentication credentials"
             )
+
+    async def get_current_user(self, credentials: HTTPAuthorizationCredentials = Security(security)):
         try:
             token = credentials.credentials
             payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[JWT_ALGORITHM])
             
-            # Check if token has expired
-            exp = payload.get("exp")
-            if exp is None:
+            if not payload:
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail="Token is missing expiration"
+                    detail="Could not validate credentials"
                 )
-                
-            if datetime.fromtimestamp(exp) < datetime.utcnow():
-                raise HTTPException(
-                    status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail="Token has expired"
-                )
-                
             return payload
-            
         except JWTError as e:
-            logger.error(f"JWT verification failed: {e}")
+            logger.error(f"JWT verification failed: {str(e)}")
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid authentication credentials"
             )
         except Exception as e:
-            logger.error(f"Token verification error: {e}")
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Token verification failed"
-            )
-
-    async def get_current_user(
-        self,
-        credentials: HTTPAuthorizationCredentials = Security(security)
-    ) -> Dict:
-        """Get the current authenticated user"""
-        try:
-            payload = await self.verify_token(credentials)
-            user_id = payload.get("sub")
-            
-            if user_id is None:
-                raise HTTPException(
-                    status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail="Could not validate user credentials"
-                )
-
-            user = await db.users.find_one({"_id": ObjectId(user_id)})
-            if user is None:
-                raise HTTPException(
-                    status_code=status.HTTP_404_NOT_FOUND,
-                    detail="User not found"
-                )
-
-            # Remove sensitive information
-            user.pop("password", None)
-            return user
-
-        except Exception as e:
-            logger.error(f"Error getting current user: {e}")
+            logger.error(f"Authentication error: {str(e)}")
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Authentication failed"
@@ -134,7 +99,7 @@ class AuthMiddleware:
 
     async def optional_auth(
         self,
-        credentials: Optional[HTTPAuthorizationCredentials] = Security(security, auto_error=False)
+        credentials: HTTPAuthorizationCredentials = Security(security)
     ) -> Optional[Dict]:
         """Optionally authenticate a user"""
         if not credentials:

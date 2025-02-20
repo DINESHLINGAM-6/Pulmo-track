@@ -3,7 +3,9 @@ uvicorn
 pymongo
 motor
 pydantic
-passlib
-python-jose
-bcrypt
+python-jose[cryptography]
 python-multipart
+python-dotenv
+passlib
+bcrypt>=4.0.0
+email-validator

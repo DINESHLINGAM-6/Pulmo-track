@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, status, Query
+from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, status, Query, Form
 from typing import List, Optional
 from datetime import datetime
 from models.report import Report, ReportType, ReportStatus, AIAnalysisResult
@@ -9,6 +9,8 @@ from models.user import User
 from bson import ObjectId
 import uuid
 from pydantic import BaseModel
+from utils.auth_middleware import get_current_user
+from services.mongo_service import mongodb
 
 router = APIRouter()
 
@@ -58,55 +60,46 @@ async def validate_report_upload(file: UploadFile, report_type: ReportType) -> N
             detail=f"File type {content_type} not allowed for report type {report_type}"
         )
 
-@router.post("/upload", response_model=ReportResponse)
+@router.post("/upload")
 async def upload_report(
     file: UploadFile = File(...),
-    report_type: ReportType = ReportType.OTHER,
-    description: Optional[str] = None,
-    is_critical: bool = False,
-    current_user: User = Depends(get_current_user)
+    report_type: str = Form(...),
+    description: str = Form(None),
+    current_user: dict = Depends(get_current_user)
 ):
     try:
-        # Validate upload
-        await validate_report_upload(file, report_type)
-        
-        # Generate IDs and read file
-        file_id = str(uuid.uuid4())
-        contents = await file.read()
-        
-        # Upload to storage
-        file_url = await upload_to_storage(file_id, contents, file.content_type)
+        # Validate report type
+        valid_types = ["medical_report", "xray", "ct_scan", "mri", "lab_result"]
+        if report_type.lower() not in valid_types:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Invalid report type. Must be one of: {', '.join(valid_types)}"
+            )
+
+        # Read file content
+        content = await file.read()
         
         # Create report document
-        report = Report(
-            id=str(ObjectId()),
-            patient_id=str(current_user["_id"]),
-            report_type=report_type,
-            title=file.filename,
-            description=description,
-            file_url=file_url,
-            file_type=file.content_type,
-            file_size=len(contents),
-            status=ReportStatus.PENDING,
-            is_critical=is_critical,
-            uploaded_at=datetime.utcnow()
-        )
-        
-        # Save to database
-        result = await db.reports.insert_one(report.dict(by_alias=True))
-        
-        # Trigger async analysis if needed
-        if report_type in [ReportType.XRAY, ReportType.CT_SCAN]:
-            # Implement async analysis trigger here
-            pass
-        
-        return report
+        report = {
+            "_id": str(ObjectId()),
+            "user_id": current_user["sub"],
+            "filename": file.filename,
+            "content_type": file.content_type,
+            "report_type": report_type.lower(),
+            "description": description,
+            "uploaded_at": datetime.utcnow(),
+            "file_size": len(content)
+        }
 
+        # Save file and report details
+        await mongodb.db.reports.insert_one(report)
+        
+        return {
+            "message": "Report uploaded successfully",
+            "report_id": report["_id"]
+        }
     except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=str(e)
-        )
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/reports", response_model=List[ReportResponse])
 async def get_reports(

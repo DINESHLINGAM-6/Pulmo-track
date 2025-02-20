@@ -20,6 +20,7 @@ venv/
 
 # Ignore environment variables
 .env
+.env.*
 
 # Ignore PyCharm files
 .idea/
@@ -40,3 +41,8 @@ docker-compose.yml
 # Ignore system files
 .DS_Store
 Thumbs.db
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class

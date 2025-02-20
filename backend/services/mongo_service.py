@@ -5,10 +5,10 @@ from typing import Optional, Dict, List, Any
 import logging
 import os
 from datetime import datetime
+from dotenv import load_dotenv
 
-# Environment variables
-MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017")
-DB_NAME = os.getenv("DB_NAME", "pulmo_track")
+# Load environment variables
+load_dotenv()
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -16,11 +16,16 @@ logger = logging.getLogger(__name__)
 
 class MongoService:
     def __init__(self):
-        self.client: Optional[AsyncIOMotorClient] = None
+        self.client = None
         self.db = None
         
     async def connect(self):
         try:
+            # Get MongoDB URI from environment variables
+            MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017")
+            DB_NAME = os.getenv("DB_NAME", "pulmo_track")
+
+            # Connect to MongoDB
             self.client = AsyncIOMotorClient(MONGO_URI)
             self.db = self.client[DB_NAME]
             
@@ -30,7 +35,8 @@ class MongoService:
             await self.db.reports.create_index([("patient_id", 1), ("uploaded_at", -1)])
             await self.db.files.create_index("file_id", unique=True)
             
-            logger.info("Connected to MongoDB")
+            logger.info("Connected to MongoDB successfully")
+            return self.db
         except Exception as e:
             logger.error(f"Could not connect to MongoDB: {e}")
             raise
@@ -152,16 +158,16 @@ class MongoService:
             logger.error(f"Error updating user settings: {e}")
             raise
 
-# Create a singleton instance
-db_service = MongoService()
+# Create database instance
+mongodb = MongoService()
 
 # Export the database instance for use in other modules
-db = db_service.db
+db = mongodb.db
 
 # Startup and shutdown events for FastAPI
 async def connect_to_mongo():
-    await db_service.connect()
+    await mongodb.connect()
 
 async def close_mongo_connection():
-    await db_service.close()
+    await mongodb.close()
 

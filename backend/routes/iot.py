@@ -1,5 +1,5 @@
 from fastapi import APIRouter, UploadFile, File
-from app.services.cough_counter import count_coughs_in_audio
+from services.cough_counter import count_coughs_in_audio
 
 router = APIRouter()
 
